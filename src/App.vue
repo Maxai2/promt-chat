@@ -49,7 +49,7 @@ import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast'
 
 const text = ref('')
-const promtArray = ref([])
+const promtArray = ref<string[]>([])
 
 const confirm = useConfirm()
 const toast = useToast()
