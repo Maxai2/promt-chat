@@ -1,60 +1,102 @@
 <template>
-  <div class="p-2 w-screen h-screen">
-    <div class="w-full grid grid-cols-[auto_1fr_auto]">
+  <div class="p-5 w-screen h-screen flex flex-col gap-8">
+    <div class="w-full grid grid-cols-[0.1fr_1fr_0.1fr]">
       <div></div>
       <div class="grid justify-center">
         <img :src="Logo" alt="Logo" class="w-24 h-24" />
       </div>
       <div class="grid">
-        <ButtonPrime
-          class="m-auto h-min"
-          severity="danger"
-          icon="pi pi-trash"
-          label="Clear All"
-        ></ButtonPrime>
+        <Button class="m-auto h-min" severity="danger" icon="pi pi-trash" label="Clear All" @click="clearAll"></Button>
       </div>
     </div>
 
-    <div class="rounded w- shadow-md grid grid-rows-[1fr_auto] gap-8">
-      <div></div>
-      <div class="grid grid-cols-[1fr_auto] gap-2">
-        <InputText v-model="text" class="w-full" />
-        <ButtonPrime label="Send" @click="send"></ButtonPrime>
+    <div class="p-6 flex-1 flex flex-col w-4/5 mx-auto gap-6 rounded shadow-md overflow-y-auto">
+      <div class="flex w-full" :class="(index % 2 == 0) ? 'justify-end' : 'justify-start'"
+        v-for="(item, index) in promtArray" :key="index">
+        <Card class="w-1/5">
+          <template #header>
+            <div class="flex justify-end gap-3 p-2">
+              <i class="pi cursor-pointer pi-copy" v-tooltip="'Copy'" @click="copyText(item)"></i>
+              <i v-if="index % 2 != 0" class="pi cursor-pointer pi-sync" v-tooltip="'Improve promt'"></i>
+            </div>
+          </template>
+          <template #content>
+            <h1>{{ item }}</h1>
+          </template>
+        </Card>
       </div>
     </div>
 
-    <!-- <div class="p-6 w-full h-full rounded shadow-md">
-      <h1 class="text-2xl font-bold mb-4 text-center">Пример формы</h1>
-
-      <div class="mb-4">
-        <label class="block mb-2 text-gray-700">Введите имя:</label>
-        <InputText v-model="name" class="w-full" />
-      </div>
-
-      <ButtonPrime
-        label="Отправить"
-        icon="pi pi-check"
-        class="w-full"
-        @click="submit"
-      ></ButtonPrime>
+    <div class="grid grid-cols-[1fr_auto] gap-2 w-1/2 mx-auto">
+      <Input v-model="text" />
+      <Button label="Send" @click="send"></Button>
     </div>
-
-    <div v-if="submitted" class="mt-6 text-green-600 text-lg">Привет, {{ name }}!</div> -->
   </div>
+
+  <ConfirmDialog />
+  <Toast severity="info" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import Logo from '@/assets/logo.svg'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import Input from 'primevue/inputtext'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast'
 
 const text = ref('')
-// const submitted = ref(false)
+const promtArray = ref([])
+
+const confirm = useConfirm()
+const toast = useToast()
 
 function send() {
-  console.log('text')
+  const tempText = text.value
+  if (tempText != '') {
+    promtArray.value.push(text.value)
+  }
+  text.value = ''
 }
 
-// function submit() {
-//   submitted.value = true
-// }
+async function clearAll() {  
+  if (promtArray.value.length != 0) {
+    const result = await confirmDelete()
+    if (result) {
+      promtArray.value = []
+    }
+  }
+}
+
+function confirmDelete(message = 'U want to delete this ... ?') {
+  return new Promise((resolve) => {
+    confirm.require({
+      message,
+      header: 'Confirm me daddy',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => resolve(true),
+      reject: () => resolve(false),
+    })
+  })
+}
+
+function copyText(message = '') {
+  const textArea = document.createElement('textarea');
+  textArea.value = message;
+
+  document.body.appendChild(textArea);
+
+  textArea.select();
+  textArea.setSelectionRange(0, 99999);
+
+  document.execCommand('copy');
+
+  document.body.removeChild(textArea);
+
+  toast.add({ summary: 'Info Message', detail: 'Text copied!', life: 3000, severity: 'info' })
+}
 </script>
