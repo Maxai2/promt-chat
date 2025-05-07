@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="p-6 flex-1 flex flex-col w-4/5 mx-auto gap-6 rounded shadow-md overflow-y-auto">
+    <div class="p-6 flex-1 flex flex-col w-4/5 mx-auto gap-6 rounded shadow-md overflow-y-auto" id="chatContainer">
       <div class="flex w-full" :class="(index % 2 == 0) ? 'justify-end' : 'justify-start'"
         v-for="(item, index) in promtArray" :key="index">
         <Card class="w-1/5">
@@ -25,16 +25,20 @@
           </template>
         </Card>
       </div>
+      <div class="flex justify-start" v-if="isLoading">
+        <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" class="loading-spinner">
+        </ProgressSpinner>
+      </div>
     </div>
 
     <div class="grid grid-cols-[1fr_auto] gap-2 w-1/2 mx-auto">
-      <Input v-model="text" />
+      <Input v-model="text" @keydown.enter="send" />
       <Button label="Send" @click="send"></Button>
     </div>
   </div>
 
-  <ConfirmDialog />
-  <Toast severity="info" />
+  <ConfirmPopup />
+  <Toast />
 </template>
 
 <script setup lang="ts">
@@ -43,26 +47,46 @@ import Logo from '@/assets/logo.svg'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Input from 'primevue/inputtext'
-import ConfirmDialog from 'primevue/confirmdialog'
+import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast'
+import ProgressSpinner from 'primevue/progressspinner';
 
 const text = ref('')
 const promtArray = ref<string[]>([])
+const isLoading = ref(false)
 
 const confirm = useConfirm()
 const toast = useToast()
 
-function send() {
+async function send() {
   const tempText = text.value
   if (tempText != '') {
     promtArray.value.push(text.value)
+
+    if (+text.value < 100) {
+      isLoading.value = true
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${text.value}`)
+
+      const val = await response.json()
+
+      promtArray.value.push(val.body)
+      isLoading.value = false
+    } else {
+      promtArray.value.push(text.value)
+    }
+
+    const container = document.getElementById('chatContainer')
+
+    if (container) {
+      container.lastElementChild?.scrollIntoView({ behavior: "smooth", block: "end" })
+    }
   }
   text.value = ''
 }
 
-async function clearAll() {  
+async function clearAll() {
   if (promtArray.value.length != 0) {
     const result = await confirmDelete()
     if (result) {

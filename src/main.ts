@@ -5,7 +5,7 @@ import App from './App.vue'
 import 'primeicons/primeicons.css'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
-import ConfirmationService from 'primevue/confirmationservice'
+import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice'
 import Tooltip from 'primevue/tooltip'
 

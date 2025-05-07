@@ -40,6 +40,10 @@
   background-color: var(--vt-c-indigo) !important;
 }
 
+.loading-spinner .p-progressspinner-circle {
+  stroke: var(--vt-c-indigo) !important;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background     : var(--vt-c-black);
