@@ -8,7 +8,9 @@
   --vt-c-black-soft: #222222;
   --vt-c-black-mute: #282828;
 
-  --vt-c-indigo: #2c3e50;
+  --vt-c-indigo         : #2c3e50;
+  --border-color        : #52525b;
+  --border-color-opacity: rgba(82, 82, 91, 0.1);
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -36,27 +38,100 @@
   --section-gap: 160px;
 }
 
-.p-card {
-  background-color: var(--vt-c-indigo) !important;
-}
-
 .loading-spinner .p-progressspinner-circle {
   stroke: var(--vt-c-indigo) !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background     : var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
+.p-inputtext,
+.p-card,
+.p-drawer,
+.p-select,
+.p-confirmpopup,
+.p-select-overlay,
+.appWrapper {
+  background-color: var(--color-background) !important;
+}
+
+.p-inputtext,
+.p-select-label,
+.p-confirmpopup-message,
+.p-select-option,
+.p-card,
+.p-toast-detail,
+.p-button,
+.p-button-label {
+  color: var(--color-text) !important;
+}
+
+.sendButton,
+.p-button-sm {
+  .p-button-label {
+    color: var(--vt-c-black) !important;
+  }
+}
+
+.toggleSwitchSpan {
+  color: var(--color-text);
+}
+
+.cardShadow {
+  border: 1px solid var(--border-color);
+}
+
+.headerWrapper {
+  border-bottom: 1px solid var(--border-color-opacity);
+}
+
+.p-select-option:not(.p-select-option-selected):not(.p-disabled).p-focus {
+  background: unset !important;
+}
+
+/* @media (prefers-color-scheme: dark) { */
+
+.dark {
+  /* :root { */
+  /* --color-background: var(--vt-c-black) !important;
+    --color-text      : var(--vt-c-text-dark-2) !important; */
+
+  /* --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
 
     --color-border      : var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text   : var(--vt-c-text-dark-2);
+    --color-heading: var(--vt-c-text-dark-1); */
+  /* } */
+
+  --color-background: var(--vt-c-black);
+  --color-text      : var(--vt-c-text-dark-2);
+
+  .p-inputtext,
+  .p-card,
+  .p-drawer,
+  .p-select,
+  .p-confirmpopup,
+  .p-select-overlay,
+  .appWrapper {
+    background-color: var(--color-background);
+  }
+
+  .p-inputtext,
+  .p-select-label,
+  .p-confirmpopup-message,
+  .p-select-option,
+  .p-card,
+  .p-toast-detail,
+  .p-button,
+  .p-button-label {
+    color: var(--color-text);
+  }
+
+  .toggleSwitchSpan {
+    color: var(--color-text);
   }
 }
+
+/* } */
 
 *,
 *::before,
